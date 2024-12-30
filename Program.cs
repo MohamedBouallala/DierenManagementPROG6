@@ -1,4 +1,6 @@
 using DierenManagement.DbContextFile;
+using Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,12 @@ builder.Configuration.AddJsonFile("appsettings.Development.json", optional: fals
 
 builder.Services.AddDbContext<AnimalManagementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnectionString")));
+
+
+builder.Services.AddIdentity<User, IdentityRole>(options => { 
+        options.SignIn.RequireConfirmedAccount = false;
+        
+        }).AddEntityFrameworkStores<AnimalManagementDbContext>();
 
 
 var app = builder.Build();
@@ -28,6 +36,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication(); // dit heb ik toegevoegd
 
 app.MapControllerRoute(
     name: "default",

@@ -1,6 +1,7 @@
 ﻿using DierenManagement.DbContextFile;
 using DierenManagement.Models;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace DierenManagement.Controllers
             return View(animal);
         }
 
-        // GET: AnimalController/Create
+        [Authorize]
         public ActionResult Create()
         {
             List<AnimalType> animalType = Enum.GetValues(typeof(AnimalType)).Cast<AnimalType>().ToList();
