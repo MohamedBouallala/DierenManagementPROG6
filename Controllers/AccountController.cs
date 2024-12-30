@@ -36,6 +36,8 @@ namespace DierenManagement.Controllers
                     LastName = model.LastName,
                     Address = model.Address,
                     Email = model.Email,
+                    NormalizedEmail = model.Email.ToUpper(),
+                    PhoneNumber = model.PhoneNumber,
                     UserName = model.Email
 
                 };
@@ -112,6 +114,34 @@ namespace DierenManagement.Controllers
             return password.ToString();
 
         }
+
+        public IActionResult LogIn()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Animal");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "invalid Login attempt.");
+                    return View();
+                }
+            }
+            return View();
+        }
+
+
     }
 
 }

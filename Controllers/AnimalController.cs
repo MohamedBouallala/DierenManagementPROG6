@@ -33,7 +33,7 @@ namespace DierenManagement.Controllers
             return View(animal);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             List<AnimalType> animalType = Enum.GetValues(typeof(AnimalType)).Cast<AnimalType>().ToList();
@@ -45,6 +45,7 @@ namespace DierenManagement.Controllers
         // POST: AnimalController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
         public ActionResult Create(Animal animal)
         {
             try
@@ -60,6 +61,7 @@ namespace DierenManagement.Controllers
         }
 
         // GET: AnimalController/Edit/5
+        [Authorize(Roles ="Admin")]
         public ActionResult Edit(int id)
         {
             Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
@@ -73,6 +75,7 @@ namespace DierenManagement.Controllers
         // POST: AnimalController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles ="Admin")]
         public ActionResult Edit(Animal currentAnimal)
         {
             
@@ -93,6 +96,7 @@ namespace DierenManagement.Controllers
         }
 
         // GET: AnimalController/Delete/5
+        [Authorize(Roles ="Admin")]
         public ActionResult Delete(int id)
         {
             Animal? animal = _context.Animals.FirstOrDefault(anim => anim.Id == id);
