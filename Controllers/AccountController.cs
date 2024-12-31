@@ -39,7 +39,9 @@ namespace DierenManagement.Controllers
                     Email = model.Email,
                     NormalizedEmail = model.Email.ToUpper(),
                     PhoneNumber = model.PhoneNumber,
-                    UserName = model.Email
+                    UserName = model.Email,
+                    LoyaltyCard = model.LoyaltyCard
+                    
                     
 
                 };
@@ -62,6 +64,8 @@ namespace DierenManagement.Controllers
                     if (roleResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
+
                         return View("Register", model);
                     }
 
@@ -77,6 +81,7 @@ namespace DierenManagement.Controllers
 
             }
 
+            ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
                 return View(model);
 
         }

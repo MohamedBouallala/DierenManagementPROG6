@@ -47,17 +47,22 @@
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
+            <div class="form-group">
+                <p>
+                    @Model.LoyaltyCard
+                </p>
+            </div>
+            <div class="form-group">
                 <label for="LoyaltyCard">Choose Card type:</label>
                 <select asp-for="LoyaltyCard" class="form-control" id="AnimalType">
                     <option value="">-- Select a Type --</option>
-                    @foreach (var card in ViewBag.LoyaltyCard)
+                    @foreach (var card in ViewBag.LoyaltyCards)
                     {
                         <option value="@card">@card</option>
                     }
                 </select>
                 <span asp-validation-for="LoyaltyCard" class="text-danger"></span>
-            </div> *@
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

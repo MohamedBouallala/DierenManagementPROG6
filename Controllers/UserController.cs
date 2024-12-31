@@ -52,6 +52,7 @@ namespace DierenManagement.Controllers
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
                 Password = user.Password,
+                LoyaltyCard = user.LoyaltyCard
             };
 
             return View(model);
@@ -73,6 +74,9 @@ namespace DierenManagement.Controllers
                 Password = user.Password
 
             };
+
+            ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
+
             return View(model);
         }
 
@@ -91,7 +95,7 @@ namespace DierenManagement.Controllers
                 user.PhoneNumber = model.PhoneNumber;
                 user.Address = model.Address;
                 user.UserName = model.Email;
-                // user.LoyaltyCard = model.LoyaltyCard;
+                user.LoyaltyCard = model.LoyaltyCard;
 
                 var result = await _userManager.UpdateAsync(user);
                // var passwordResult = await _userManager.ChangePasswordAsync(user, user.Password, model.Password); // dit werkt niet password hashed.
@@ -105,10 +109,13 @@ namespace DierenManagement.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
+                ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
                 return View(model);
             }
             catch
             {
+                ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
                 return View(model);
             }
         }
