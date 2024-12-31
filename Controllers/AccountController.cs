@@ -21,6 +21,7 @@ namespace DierenManagement.Controllers
         public IActionResult Register() // view
         {
             var model = new RegisterViewModel();
+            ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
             return View(model);
         }
 
@@ -39,6 +40,7 @@ namespace DierenManagement.Controllers
                     NormalizedEmail = model.Email.ToUpper(),
                     PhoneNumber = model.PhoneNumber,
                     UserName = model.Email
+                    
 
                 };
 
@@ -55,9 +57,14 @@ namespace DierenManagement.Controllers
                 {
                     //_logger
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    var roleResult = await _userManager.AddToRoleAsync(user, "Client"); // "Client" hard coded.
 
-                    return View("Register", model);
+                    if (roleResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return View("Register", model);
+                    }
+
                 }
                 else
                 {
