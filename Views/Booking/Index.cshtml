@@ -1,4 +1,4 @@
-﻿<p class="text-center" style="color:darkturquoise; font-size:50px">
+﻿<p class="text-center" style="color:burlywood; font-size:50px">
     Book a animal
 </p>
 <p class="text-center; text-black" style="font-size:40px">
@@ -8,12 +8,15 @@
 
 <form asp-controller="Booking" asp-action="Animals">
 
-    <input type="date" id="Date" name="Date">
-    <button class="btn-success" type="submit">Book</button>
+    <input type="date" id="Date" name="Date" required>
+    <button class="btn-success" type="submit">Select</button>
 
 </form>
 
 <script>
-    //Hier moet ik zorgen dat de gebruiker geen volledige datum kan selecteren
+
+    const today = new Date().toISOString().split('T')[0];
+
+    document.getElementById('Date').setAttribute('min', today);
     
 </script>

@@ -1,0 +1,9 @@
+﻿.dot{
+    height:80px;
+    width:80px;
+    background-color:gray;
+    border-radius: 50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}

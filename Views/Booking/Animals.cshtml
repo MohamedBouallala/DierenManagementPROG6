@@ -1,5 +1,18 @@
 ﻿@model DierenManagement.ViewModels.BookingViewModel
 
+<link rel="stylesheet" href="~/css/StyleSheet.css">
+
+<div style="display:flex; justify-content:space-between ">
+    <span class="dot" style="background-color:lightgreen">step1</span>
+    <span class="dot">step2</span>
+    <span class="dot">step3</span>
+</div>
+
+<div style="background-color:burlywood; margin-top:80px;">
+    <p style="font-weight:bold; text-align:center"> Step 2 -Select Animal(s)</p>
+</div>
+
+<div style="background-color:floralwhite; display:flex; justify-content:space-between">
 <form asp-controller="Booking" asp-action="BookingData" method="post">
     <h1>Date: @Model.Date</h1>
 
@@ -26,3 +39,5 @@
     <input type="hidden" name="UserId" value="@Model.UserId">
     <button type="submit" style="display:block" class="btn-success">Book</button>
 </form>
+</div>
+
