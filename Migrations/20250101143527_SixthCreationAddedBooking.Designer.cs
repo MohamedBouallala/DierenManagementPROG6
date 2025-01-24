@@ -4,6 +4,7 @@ using DierenManagement.DbContextFile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DierenManagement.Migrations
 {
     [DbContext(typeof(AnimalManagementDbContext))]
-    partial class AnimalManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250101143527_SixthCreationAddedBooking")]
+    partial class SixthCreationAddedBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +35,6 @@ namespace DierenManagement.Migrations
 
                     b.Property<int>("AnimalType")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsSelected")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -63,8 +63,8 @@ namespace DierenManagement.Migrations
                     b.Property<int>("AnimalId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -201,13 +201,13 @@ namespace DierenManagement.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "136d7063-9183-4adf-a001-d303d429f301",
+                            Id = "2154bae0-da5e-4d1d-be15-1d4bdfeee075",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "89cb15ab-ae48-479f-9375-e0e58bce201c",
+                            Id = "b92e1a03-377f-4815-b2bf-89c9c77db9af",
                             Name = "Client",
                             NormalizedName = "Client"
                         });

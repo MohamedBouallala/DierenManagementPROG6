@@ -2,11 +2,13 @@ using DierenManagement.DbContextFile;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection; // dit is for auto update view
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
 
 builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 

@@ -1,0 +1,28 @@
+﻿@model DierenManagement.ViewModels.BookingViewModel
+
+<form asp-controller="Booking" asp-action="BookingData" method="post">
+    <h1>Date: @Model.Date</h1>
+
+    @Html.HiddenFor(m => m.Date)
+
+    @for (var i = 0; i < Model.Animals.Count; i++)
+    {
+        <div style="display: inline-block; margin: 10px; text-align: center;">
+            <div style="border: 1px solid #ccc; padding: 10px;">
+                <img src="@Model.Animals[i].Pic" alt="@Model.Animals[i].Name" style="width: 150px; height: 150px;" />
+                <br />
+                <label>
+                    @Html.HiddenFor(m => m.Animals[i].Id)
+                    @Html.HiddenFor(m => m.Animals[i].Name)
+                    @Html.HiddenFor(m => m.Animals[i].Pic)
+                    @Html.HiddenFor(m => m.Animals[i].Price)
+                    @Html.CheckBoxFor(m => m.Animals[i].IsSelected) @Model.Animals[i].Name
+                    <br />
+                    Price: @Model.Animals[i].Price
+                </label>
+            </div>
+        </div>
+    }
+    <input type="hidden" name="UserId" value="@Model.UserId">
+    <button type="submit" style="display:block" class="btn-success">Book</button>
+</form>

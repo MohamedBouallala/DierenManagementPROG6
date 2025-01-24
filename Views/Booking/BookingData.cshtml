@@ -1,0 +1,53 @@
+﻿@model DierenManagement.ViewModels.BookingViewModel
+
+<div style="background-color:burlywood; margin-top:80px;">
+    <p style="font-weight:bold; text-align:center"> Step 3 -Check your details</p>
+</div>
+
+<div style="background-color:floralwhite; display:flex; justify-content:space-between">
+    <div style="margin-left:20px">
+        <p style="font-size:30px ; font-weight:bold">
+            Contact details
+        </p>
+        <p>
+            First Name: @Model.User.FirstName
+        </p>
+        <p>
+            Last Name: @Model.User.LastName
+        </p>
+        <p>
+            Adress: @Model.User.Address
+        </p>
+        <p>
+            Email:  @Model.User.Email
+        </p>
+        <p style="font-size:30px ; font-weight:bold">
+            Price/Discount
+        </p>
+
+        @foreach (var animal in Model.Animals)
+        {
+            <br />
+            @($"{animal.Name} {animal.Price.ToString("c")}")
+        }
+
+        <p style="font-size:30px;font-weight:bold">
+            Totaal: @ViewBag.Totaal
+        </p>
+
+        <br/>
+        <button class="btn-success" style="margin-top:40px">Confirm your booking</button>
+    </div>
+        
+    <div style="background-color:wheat; width:30%; justify-items:center">
+        <p style="font-weight:bold;font-size:30px; text-align:center">Boeking <br /> Date: @Model.Date</p>
+        
+        @foreach (var animal in Model.Animals)
+        {
+            <br />
+            <img style="width:90px" src="@animal.Pic">
+        }
+    </div>
+</div>
+
+

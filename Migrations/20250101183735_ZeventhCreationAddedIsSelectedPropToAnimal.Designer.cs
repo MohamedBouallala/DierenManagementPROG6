@@ -4,6 +4,7 @@ using DierenManagement.DbContextFile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DierenManagement.Migrations
 {
     [DbContext(typeof(AnimalManagementDbContext))]
-    partial class AnimalManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250101183735_ZeventhCreationAddedIsSelectedPropToAnimal")]
+    partial class ZeventhCreationAddedIsSelectedPropToAnimal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,8 +66,8 @@ namespace DierenManagement.Migrations
                     b.Property<int>("AnimalId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -201,13 +204,13 @@ namespace DierenManagement.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "136d7063-9183-4adf-a001-d303d429f301",
+                            Id = "61903bd6-4c0d-46dc-b1c3-f8706e65bbe6",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "89cb15ab-ae48-479f-9375-e0e58bce201c",
+                            Id = "02eea71c-bbe3-45f0-b1da-68f81e984e0e",
                             Name = "Client",
                             NormalizedName = "Client"
                         });
