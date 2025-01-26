@@ -1,4 +1,5 @@
-﻿using DierenManagement.DbContextFile;
+﻿using DAL;
+using DierenManagement.DbContextFile;
 using DierenManagement.Models;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -10,17 +11,20 @@ namespace DierenManagement.Controllers
 {
     public class AnimalController : Controller
     {
-        AnimalManagementDbContext _context;
+        //AnimalManagementDbContext _context;
 
-        public AnimalController(AnimalManagementDbContext context)
+        private IAnimalRepository _animalRepository;
+
+        public AnimalController(/*AnimalManagementDbContext context,*/ IAnimalRepository repository)
         {
-            this._context = context;
+            //this._context = context;
+            _animalRepository = repository;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            ICollection<Animal> animals = _context.Animals.ToList();
+            ICollection<Animal> animals = _animalRepository.GetAllAnimals().ToList();
 
             return View(animals);
         }
@@ -28,7 +32,9 @@ namespace DierenManagement.Controllers
         [HttpGet]
         public ActionResult Details(int id)
         {
-            Animal? animal = _context.Animals.FirstOrDefault(animal => animal.Id == id);
+            //Animal? animal = _context.Animals.FirstOrDefault(animal => animal.Id == id);
+            Animal? animal = _animalRepository.GetAnimalById(id);
+
 
             return View(animal);
         }
@@ -50,8 +56,7 @@ namespace DierenManagement.Controllers
         {
             try
             {
-                _context.Animals.Add(animal);
-                _context.SaveChanges();
+                _animalRepository.Add(animal);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -64,7 +69,8 @@ namespace DierenManagement.Controllers
         //[Authorize(Roles ="Admin")]
         public ActionResult Edit(int id)
         {
-            Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+            //Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+            Animal animal = _animalRepository.GetAnimalById(id);
 
             List<AnimalType> animalTypes = Enum.GetValues(typeof(AnimalType)).Cast<AnimalType>().ToList();
             ViewBag.AnimalType = animalTypes;
@@ -78,28 +84,31 @@ namespace DierenManagement.Controllers
         //[Authorize(Roles ="Admin")]
         public ActionResult Edit(Animal currentAnimal)
         {
-            
-            Animal? animalToUpdate = _context.Animals.FirstOrDefault(a => a.Id == currentAnimal.Id);
 
-            if (animalToUpdate != null) 
+            //Animal? animalToUpdate = _context.Animals.FirstOrDefault(a => a.Id == currentAnimal.Id);
+
+            //Animal animalToUpdate = _animalRepository.GetAnimalById(currentAnimal.Id);
+
+            if (currentAnimal != null)
             {
-                _context.Entry(animalToUpdate).CurrentValues.SetValues(currentAnimal);
-                _context.SaveChanges();
+                _animalRepository.Update(currentAnimal);
                 return RedirectToAction(nameof(Index));
 
             }
-            else 
+            else
             {
-                return View();   
+                return View();
             }
-            
+
         }
 
         // GET: AnimalController/Delete/5
         //[Authorize(Roles ="Admin")]
         public ActionResult Delete(int id)
         {
-            Animal? animal = _context.Animals.FirstOrDefault(anim => anim.Id == id);
+            //Animal? animal = _context.Animals.FirstOrDefault(anim => anim.Id == id);
+            Animal animal = _animalRepository.GetAnimalById(id);
+
 
             return View(animal);
         }
@@ -111,9 +120,13 @@ namespace DierenManagement.Controllers
         {
             try
             {
-                Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
-                _context.Remove(animal);
-                _context.SaveChanges();
+                //Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
+                //_context.Remove(animal);
+
+                Animal animal = _animalRepository.GetAnimalById(id);
+                _animalRepository.Delete(animal);
+
+                //_context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -1,3 +1,4 @@
+using DAL;
 using DierenManagement.DbContextFile;
 using Domain;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +22,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
         
         }).AddEntityFrameworkStores<AnimalManagementDbContext>();
 
+builder.Services.AddScoped<IAnimalRepository, SqlAnimalRepository>(); // DI
 
 var app = builder.Build();
 
