@@ -33,7 +33,7 @@
             Price/Discount
         </p>
 
-        @foreach (var animal in Model.Animals)
+        @foreach (var animal in Model.listWithSelectedAnimals)
         {
             <br />
             @($"{animal.Name} {animal.Price.ToString("c")}")
@@ -50,7 +50,7 @@
     <div style="background-color:wheat; width:30%; justify-items:center">
         <p style="font-weight:bold;font-size:30px; text-align:center">Boeking <br /> Date: @Model.Date</p>
         
-        @foreach (var animal in Model.Animals)
+        @foreach (var animal in Model.listWithSelectedAnimals)
         {
             <br />
             <img style="width:90px" src="@animal.Pic">

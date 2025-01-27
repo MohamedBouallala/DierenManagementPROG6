@@ -8,12 +8,21 @@
     <span class="dot">step3</span>
 </div>
 
-<div style="background-color:burlywood; margin-top:80px;">
+@if (ViewBag.Error != null)
+{
+    <div style="color:white;background-color:red;text-align:center; padding: 10px;border-radius: 5px;margin-top:30px; font-weight:bold">
+       <ul>
+            @Html.Raw(@ViewBag.Error)
+       </ul>
+    </div>
+}
+
+<div style="background-color:burlywood; margin-top:30px;">
     <p style="font-weight:bold; text-align:center"> Step 2 -Select Animal(s)</p>
 </div>
 
 <div style="background-color:floralwhite; display:flex; justify-content:space-between">
-<form asp-controller="Booking" asp-action="BookingData" method="post">
+<form asp-controller="Booking" asp-action="BookButton" method="post">
     <h1>Date: @Model.Date</h1>
 
     @Html.HiddenFor(m => m.Date)
@@ -29,9 +38,12 @@
                     @Html.HiddenFor(m => m.Animals[i].Name)
                     @Html.HiddenFor(m => m.Animals[i].Pic)
                     @Html.HiddenFor(m => m.Animals[i].Price)
+                    @Html.HiddenFor(m => m.Animals[i].AnimalType)
                     @Html.CheckBoxFor(m => m.Animals[i].IsSelected) @Model.Animals[i].Name
                     <br />
                     Price: @Model.Animals[i].Price
+                    <br/>
+                    Type: @Model.Animals[i].AnimalType
                 </label>
             </div>
         </div>
