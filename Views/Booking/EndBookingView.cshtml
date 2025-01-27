@@ -1,0 +1,25 @@
+﻿@model DierenManagement.ViewModels.BookingViewModel
+
+<div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
+    <h1 style="color: green;">Thank You!</h1>
+    <p style="font-size: 18px; color: #333;">
+        Your booking has been successfully placed.
+    </p>
+    <div style="margin-top: 20px;">
+        <h3>Booking Details</h3>
+        <ul style="list-style-type: none; padding: 0; font-size: 16px; color: #555;">
+            <li><strong>Date:</strong> @Model.Date.ToString("dd/MM/yyyy")</li>
+            <li><strong>Number of Animals:</strong> @Model.listWithSelectedAnimals.Count</li>
+            <li><strong>Selected Animals:</strong></li>
+            <ul>
+                @foreach (var animal in Model.listWithSelectedAnimals)
+                {
+                    <li>- @animal.Name (@animal.AnimalType)</li>
+                }
+            </ul>
+        </ul>
+    </div>
+    <a href="/" style="display: inline-block; margin-top: 30px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+        Return to Home
+    </a>
+</div>

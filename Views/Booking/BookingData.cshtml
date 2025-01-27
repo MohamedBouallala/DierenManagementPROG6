@@ -12,11 +12,18 @@
     <p style="font-weight:bold; text-align:center"> Step 3 -Check your details</p>
 </div>
 
+<form asp-controller="Booking" asp-action="ConfirmBookingButton">
+
 <div style="background-color:floralwhite; display:flex; justify-content:space-between">
     <div style="margin-left:20px">
         <p style="font-size:30px ; font-weight:bold">
             Contact details
         </p>
+        
+        <input type="hidden" name="Date" value="@Model.Date" />
+
+        <input type="hidden" name="User.Id" value="@Model.User.Id" />
+
         <p>
             First Name: @Model.User.FirstName
         </p>
@@ -33,18 +40,28 @@
             Price/Discount
         </p>
 
-        @foreach (var animal in Model.listWithSelectedAnimals)
+       @*  @foreach (var animal in Model.listWithSelectedAnimals)
         {
             <br />
             @($"{animal.Name} {animal.Price.ToString("c")}")
-        }
+        } *@
+
+            @foreach (var item in Model.listWithSelectedAnimals.Select((animal, index) => new { animal, index }))
+            {
+                <br />
+                @($"{item.animal.Name} {item.animal.Price.ToString("c")}")
+                <input type="hidden" name="listWithSelectedAnimals[@item.index].Id" value="@item.animal.Id" />
+                <input type="hidden" name="listWithSelectedAnimals[@item.index].Name" value="@item.animal.Name" />
+                <input type="hidden" name="listWithSelectedAnimals[@item.index].Price" value="@item.animal.Price" />
+                <input type="hidden" name="listWithSelectedAnimals[@item.index].AnimalType" value="@item.animal.AnimalType" />
+            }
 
         <p style="font-size:30px;font-weight:bold">
             Totaal: @ViewBag.Totaal
         </p>
 
         <br/>
-        <button class="btn-success" style="margin-top:40px">Confirm your booking</button>
+        <button class="btn-success" style="margin-top:40px" type="submit">Confirm your booking</button>
     </div>
         
     <div style="background-color:wheat; width:30%; justify-items:center">
@@ -57,5 +74,6 @@
         }
     </div>
 </div>
+</form>
 
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using DierenManagement.Models;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 
 namespace DierenManagement.Controllers
 {
@@ -59,21 +60,6 @@ namespace DierenManagement.Controllers
 
                 CardRulesNotViolated(model);
                 CanAnimalsBeBooked(model);
-
-                // een nieuwe methode om opteslaan die naar de BookingData view gaat
-
-                //foreach (var listSelectedAnimals in listWithSelectedAnimals)   
-                //{
-                //    Booking booking = new Booking()
-                //    {
-                //        Date = model.Date,
-                //        UserId = model.UserId,
-                //        AnimalId = listSelectedAnimals.Id
-                //    };
-
-                //    _context.bookings.Add(booking);
-                //}
-                //_context.SaveChanges();
                 
                 int totaal = 0;
 
@@ -83,7 +69,14 @@ namespace DierenManagement.Controllers
                 }
                 ViewBag.Totaal = totaal;
 
-                return View("BookingData", model);
+                if (model.listWithSelectedAnimals.Count() == 0)
+                {
+                    return View("Animals", model);
+                }
+                else
+                {
+                    return View("BookingData", model);
+                }
 
 
             }
@@ -99,7 +92,7 @@ namespace DierenManagement.Controllers
         {
             List<string> errors = new List<string>();
 
-            if (IsthereACornivoreAndForestAnimal(model.listWithSelectedAnimals))
+            if (IsthereACornivoreAndFarmAnimal(model.listWithSelectedAnimals))
             {
                 //throw new Exception("Sorry you can't book a Carnivore and a ForestAnimal at the same time");
                 errors.Add("Sorry you can't book a Carnivore and a Farm Animal at the same time");
@@ -131,7 +124,7 @@ namespace DierenManagement.Controllers
 
         }
 
-        public bool IsthereACornivoreAndForestAnimal(List<Animal> animals)
+        public bool IsthereACornivoreAndFarmAnimal(List<Animal> animals)
         {
             //List<Animal> selectedAnimals = animals.Where(a => a.IsSelected == true).ToList();
 
@@ -163,7 +156,7 @@ namespace DierenManagement.Controllers
             
         }
 
-        public bool IsAnimalBookedOnaBadDay(BookingViewModel booking)
+        public bool IsAnimalBookedOnaBadDay(BookingViewModel booking) // penguin
         {
             foreach(var animal in booking.listWithSelectedAnimals)
             {
@@ -221,6 +214,33 @@ namespace DierenManagement.Controllers
             return true;
         }
 
+        public ActionResult ConfirmBookingButton(BookingViewModel model)
+        {
 
+            foreach (var listSelectedAnimals in model.listWithSelectedAnimals)
+            {
+                Booking booking = new Booking()
+                {
+                    Date = model.Date,
+                    UserId = model.User.Id,
+                    AnimalId = listSelectedAnimals.Id
+                };
+
+                _context.bookings.Add(booking);
+            }
+            _context.SaveChanges();
+
+            return View("EndBookingView", model);
+        }
+
+        public ActionResult Bookings()
+        {
+            string userName = User.Identity.Name; // GetId werkt niet
+            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            List<Booking> bookings = _context.bookings.Where(b => b.UserId == user.Id).Include(b => b.Animal).ToList();
+
+            return View("AllBookings",bookings);
+        }
     }
 }
