@@ -20,13 +20,12 @@ namespace DierenManagement.Controllers
         }
 
 
-        // GET: BookingController
         public ActionResult Index() // select a date view
         {
             return View();
         }
 
-        
+        [HttpGet]
         public ActionResult Animals(BookingViewModel model) // all animals view
         {
             //de datum geselecteerd in index komt hier in.
@@ -214,6 +213,9 @@ namespace DierenManagement.Controllers
             return true;
         }
 
+        //Totaal methode die het booking binnen krijgt vervolgens de type checkt en daarnna korting toepast.
+
+
         public ActionResult ConfirmBookingButton(BookingViewModel model)
         {
 
@@ -233,14 +235,55 @@ namespace DierenManagement.Controllers
             return View("EndBookingView", model);
         }
 
-        public ActionResult Bookings()
+
+        public ActionResult Bookings() // Gebruik Groep by. check of je bij ellke datum of je alle dieren der bij krijgt.
         {
             string userName = User.Identity.Name; // GetId werkt niet
             var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
 
             List<Booking> bookings = _context.bookings.Where(b => b.UserId == user.Id).Include(b => b.Animal).ToList();
 
-            return View("AllBookings",bookings);
+            List<BookingViewModel> groepedBookings = bookings.GroupBy(b => b.Date)
+                .Select(g => new BookingViewModel
+                {
+                    User = user,
+                    Date = g.Key,
+                    Animals = g.Select(b => b.Animal).ToList(),
+                }).ToList();
+
+
+            return View("AllBookings",groepedBookings);
+        }
+
+        public ActionResult DeleteBooking(BookingViewModel model) // hier komt de userId en de Datum van een boeking
+        {
+            List<Booking> bookingToDelete = _context.bookings.Where(b => b.UserId == model.UserId && b.Date == model.Date)
+                .ToList();
+
+            if (bookingToDelete != null)
+            {
+                foreach (Booking booking in bookingToDelete)
+                {
+                    _context.bookings.Remove(booking);
+                    _context.SaveChanges();
+                }
+            }
+
+
+            string userName = User.Identity.Name; // GetId werkt niet
+            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            List<Booking> bookings = _context.bookings.Where(b => b.UserId == user.Id).Include(b => b.Animal).ToList();
+
+            List<BookingViewModel> groepedBookings = bookings.GroupBy(b => b.Date)
+                .Select(g => new BookingViewModel
+                {
+                    User = user,
+                    Date = g.Key,
+                    Animals = g.Select(b => b.Animal).ToList(),
+                }).ToList();
+            
+            return View("AllBookings", groepedBookings);
         }
     }
 }

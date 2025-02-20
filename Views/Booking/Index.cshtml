@@ -2,14 +2,16 @@
     Book a animal
 </p>
 <p class="text-center; text-black" style="font-size:40px">
-    Welkom you can book hier one or many animals for your party. choose the date of your party and fallow the steps
-    to book a animal.
+    Welcome! You can book one or multiple animals for your party here. Choose your party date and follow the steps to reserve an animal.    
 </p>
 
-<form asp-controller="Booking" asp-action="Animals">
+<form asp-controller="Booking" asp-action="Animals" method="get">
 
-    <input type="date" id="Date" name="Date" required>
-    <button class="btn-success" type="submit">Select</button>
+    <div style="display:flex; justify-content:center">
+        <input type="date" id="Date" name="Date" required>
+        <button class="btn-success" type="submit">Select</button>
+    </div>
+    
 
 </form>
 

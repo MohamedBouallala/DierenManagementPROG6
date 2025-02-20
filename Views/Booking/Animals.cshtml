@@ -17,13 +17,15 @@
     </div>
 }
 
-<div style="background-color:burlywood; margin-top:30px;">
-    <p style="font-weight:bold; text-align:center"> Step 2 -Select Animal(s)</p>
+<div style="background-color:burlywood; margin-top:30px;height:40px">
+    <p style="font-weight:bold; text-align:center"> Step 1 -Select Animal(s)</p>
 </div>
 
 <div style="background-color:floralwhite; display:flex; justify-content:space-between">
 <form asp-controller="Booking" asp-action="BookButton" method="post">
-    <h1>Date: @Model.Date</h1>
+    <div style="display:flex; justify-content:center">
+        <h1>Date: @Model.Date</h1>
+    </div>
 
     @Html.HiddenFor(m => m.Date)
 
@@ -31,9 +33,11 @@
     {
         <div style="display: inline-block; margin: 10px; text-align: center;">
             <div style="border: 1px solid #ccc; padding: 10px;">
-                <img src="@Model.Animals[i].Pic" alt="@Model.Animals[i].Name" style="width: 150px; height: 150px;" />
+
+                <label style="cursor:pointer">
+                <img src="@Model.Animals[i].Pic" alt="@Model.Animals[i].Name" style="width: 250px; height: 250px;" />
                 <br />
-                <label>
+                
                     @Html.HiddenFor(m => m.Animals[i].Id)
                     @Html.HiddenFor(m => m.Animals[i].Name)
                     @Html.HiddenFor(m => m.Animals[i].Pic)
@@ -49,7 +53,9 @@
         </div>
     }
     <input type="hidden" name="UserId" value="@Model.UserId">
-    <button type="submit" style="display:block" class="btn-success">Book</button>
+        <div style="display:flex;justify-content:center">
+        <button type="submit" style="display:block; height:40px; width:100px" class="btn-success">Book</button>
+    </div>
 </form>
 </div>
 

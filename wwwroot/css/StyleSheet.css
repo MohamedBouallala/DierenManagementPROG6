@@ -1,7 +1,7 @@
 ﻿.dot{
-    height:80px;
-    width:80px;
-    background-color:gray;
+    height:90px;
+    width:90px;
+    background-color:lightgray;
     border-radius: 50%;
     display:flex;
     justify-content:center;
@@ -16,3 +16,45 @@
     text-align: center; 
     margin: 20px 0; 
 }*/
+
+.booking-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.booking-date {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.animals-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.animal-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 120px;
+}
+
+.animal-image {
+    max-width: 80px;
+    border-radius: 5px;
+}
+
+.animal-name {
+    display: block;
+    font-weight: 600;
+    margin-top: 5px;
+    color: #555;
+}

@@ -1,11 +1,11 @@
-﻿@model IEnumerable<Domain.Booking>;
+﻿@model IEnumerable<DierenManagement.ViewModels.BookingViewModel>;
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Bookings</h1>
 
-<table class="table">
+@* <table class="table">
     <thead>
         <tr>
             <th>
@@ -37,4 +37,45 @@
             </tr>
         }
     </tbody>
-</table>
+</table> *@
+
+<link rel="stylesheet" href="~/css/StyleSheet.css">
+
+@* @foreach (var booking in Model)
+{
+    <div class="date-group">
+        <h3>@booking.Date.ToString("yyyy-MM-dd")</h3>
+        <div class="animals">
+            @foreach (var animal in booking.Animals)
+            {
+                <span class="animal">@animal.Name</span><br/>
+                <img src="@animal.Pic"; style="max-width:80px"/>
+            }
+        </div>
+    </div>
+} *@
+
+
+    @foreach (var booking in Model)
+    {
+    <form asp-controller="Booking" asp-action="DeleteBooking">
+
+        <div class="booking-card" style="background-color:bisque">
+            <h3 class="booking-date">@booking.Date</h3>
+            <input type="hidden" name="UserId"value="@booking.User.Id"/>
+            <input type="hidden" name="Date" value="@booking.Date" />
+            <div class="animals-list">
+                @foreach (var animal in booking.Animals)
+                {
+                    <div class="animal-card">
+                        <img src="@animal.Pic" alt="@animal.Name" class="animal-image" />
+                        <span class="animal-name">@animal.Name</span>
+                    </div>
+                }
+            </div>
+            <button class="btn-danger">Cancel</button>
+        </div>
+    </form>
+    }
+
+
