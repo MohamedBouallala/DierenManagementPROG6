@@ -29,7 +29,24 @@ namespace DierenManagement.Controllers
         public ActionResult Animals(BookingViewModel model) // all animals view
         {
             //de datum geselecteerd in index komt hier in.
-            model.Animals = _context.Animals.ToList();
+            //model.Animals = _context.Animals.ToList();
+
+            List<Animal> animals = _context.Animals.ToList();
+
+            //hier haal ik dieren die al geboekt Ijn op de geselcteerde datum.
+            List<Animal> animalsAlreadyBookedOnTheDate = _context.bookings
+                .Where(b=>b.Date == model.Date)
+                .Select(b=>b.Animal)
+                .ToList();
+
+            // hier filter de dieren
+
+            List<Animal> availableAnimals = animals
+                .Where(a => !animalsAlreadyBookedOnTheDate.Any(ab => ab.Id == a.Id))
+                .ToList();
+
+            model.Animals = availableAnimals;
+
 
             // ik moet hier later de animals die de user al heeft geboekt terug uithalen. en dan vergelijken met model.animal
 
