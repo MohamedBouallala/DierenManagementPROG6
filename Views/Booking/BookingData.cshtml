@@ -12,68 +12,74 @@
     <p style="font-weight:bold; text-align:center"> Step 2 -Check your details</p>
 </div>
 
-<form asp-controller="Booking" asp-action="ConfirmBookingButton">
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-controller="Booking" asp-action="ConfirmBookingButton">
 
-<div style="background-color:floralwhite; display:flex; justify-content:space-between">
-    <div style="margin-left:20px">
-        <p style="font-size:30px ; font-weight:bold">
-            Contact details
-        </p>
-        
-        <input type="hidden" name="Date" value="@Model.Date" />
+        <div style="background-color:floralwhite; display:flex; justify-content:space-between">
+            <div style="margin-left:20px">
+                <p style="font-size:30px ; font-weight:bold">
+                    Contact details
+                </p>
 
-        <input type="hidden" name="User.Id" value="@Model.User.Id" />
+                <input type="hidden" name="Date" value="@Model.Date" />
 
-        <p>
-            First Name: @Model.User.FirstName
-        </p>
-        <p>
-            Last Name: @Model.User.LastName
-        </p>
-        <p>
-            Adress: @Model.User.Address
-        </p>
-        <p>
-            Email:  @Model.User.Email
-        </p>
-        <p style="font-size:30px ; font-weight:bold">
-            Price/Discount
-        </p>
+                <input type="hidden" name="User.Id" value="@Model.User.Id" />
 
-       @*  @foreach (var animal in Model.listWithSelectedAnimals)
-        {
-            <br />
-            @($"{animal.Name} {animal.Price.ToString("c")}")
-        } *@
+                <p>
+                    First Name: @Model.User.FirstName
+                </p>
+                <p>
+                    Last Name: @Model.User.LastName
+                </p>
+                <p>
+                    Adress: @Model.User.Address
+                </p>
+                <p>
+                    Email:  @Model.User.Email
+                </p>
+                <p style="font-size:30px ; font-weight:bold">
+                    Price/Discount
+                </p>
 
-            @foreach (var item in Model.listWithSelectedAnimals.Select((animal, index) => new { animal, index }))
-            {
+                @foreach (var item in Model.listWithSelectedAnimals.Select((animal, index) => new { animal, index }))
+                {
+                    <br />
+                    @($"{item.animal.Name} {item.animal.Price.ToString("c")}")
+                    <input type="hidden" name="listWithSelectedAnimals[@item.index].Id" value="@item.animal.Id" />
+                    <input type="hidden" name="listWithSelectedAnimals[@item.index].Name" value="@item.animal.Name" />
+                    <input type="hidden" name="listWithSelectedAnimals[@item.index].Price" value="@item.animal.Price" />
+                    <input type="hidden" name="listWithSelectedAnimals[@item.index].AnimalType" value="@item.animal.AnimalType" />
+                }
+
+                <p style="font-size:30px;font-weight:bold">
+                    Totaal: @ViewBag.Totaal.ToString("c")
+                </p>
+
                 <br />
-                @($"{item.animal.Name} {item.animal.Price.ToString("c")}")
-                <input type="hidden" name="listWithSelectedAnimals[@item.index].Id" value="@item.animal.Id" />
-                <input type="hidden" name="listWithSelectedAnimals[@item.index].Name" value="@item.animal.Name" />
-                <input type="hidden" name="listWithSelectedAnimals[@item.index].Price" value="@item.animal.Price" />
-                <input type="hidden" name="listWithSelectedAnimals[@item.index].AnimalType" value="@item.animal.AnimalType" />
-            }
+                <button class="btn-success" style="margin-top:40px" type="submit">Confirm your booking</button>
+            </div>
 
-        <p style="font-size:30px;font-weight:bold">
-            Totaal: @ViewBag.Totaal
-        </p>
+            <div style="background-color:wheat; width:30%; justify-items:center">
+                <p style="font-weight:bold;font-size:30px; text-align:center">Booking <br /> Date: @Model.Date</p>
 
-        <br/>
-        <button class="btn-success" style="margin-top:40px" type="submit">Confirm your booking</button>
+                @foreach (var animal in Model.listWithSelectedAnimals)
+                {
+                    <br />
+                    <img style="width:90px" src="@animal.Pic">
+                }
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <div style="background-color:floralwhite; padding: 20px; text-align: center;">
+        <p style="font-size:25px; font-weight:bold; color:red;">Please log in to continue your booking.</p>
+        <a href="@Url.Action("LogIn", "Account")" class="btn btn-primary">Log in</a>
     </div>
-        
-    <div style="background-color:wheat; width:30%; justify-items:center">
-        <p style="font-weight:bold;font-size:30px; text-align:center">Boeking <br /> Date: @Model.Date</p>
-        
-        @foreach (var animal in Model.listWithSelectedAnimals)
-        {
-            <br />
-            <img style="width:90px" src="@animal.Pic">
-        }
-    </div>
-</div>
-</form>
+}
+
+
 
 

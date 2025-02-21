@@ -1,6 +1,7 @@
 ﻿using DierenManagement.Models;
 using DierenManagement.ViewModels;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -11,11 +12,13 @@ namespace DierenManagement.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager; // dit heb ik toegevoegd later kijken of dit er ook bij moet
 
-        public AccountController(UserManager<User> userManager,SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager,SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Register() // view
@@ -24,7 +27,7 @@ namespace DierenManagement.Controllers
             ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
             return View(model);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -42,7 +45,6 @@ namespace DierenManagement.Controllers
                     UserName = model.Email,
                     LoyaltyCard = model.LoyaltyCard
                     
-                    
 
                 };
 
@@ -57,7 +59,7 @@ namespace DierenManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    //_logger
+                    //var roleExists = await _roleManager.RoleExistsAsync("Client"); // Ensure role exists
 
                     var roleResult = await _userManager.AddToRoleAsync(user, "Client"); // "Client" hard coded.
 
@@ -66,7 +68,7 @@ namespace DierenManagement.Controllers
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
 
-                        return View("Register", model);
+                        return View("Register", model); // dit moet ik aanpassen
                     }
 
                 }
@@ -140,9 +142,13 @@ namespace DierenManagement.Controllers
 
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
 
-                if (result.Succeeded)
+                if (result.Succeeded && User.IsInRole("Admin"))
                 {
                     return RedirectToAction("Index", "Animal");
+                }
+                else if (result.Succeeded && User.IsInRole("Client"))
+                {
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -151,6 +157,13 @@ namespace DierenManagement.Controllers
                 }
             }
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index","Home");
         }
 
 

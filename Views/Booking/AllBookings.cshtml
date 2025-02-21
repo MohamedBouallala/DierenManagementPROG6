@@ -55,27 +55,36 @@
     </div>
 } *@
 
-
-    @foreach (var booking in Model)
+@if (Model.Count() == 0)
     {
-    <form asp-controller="Booking" asp-action="DeleteBooking">
-
-        <div class="booking-card" style="background-color:bisque">
-            <h3 class="booking-date">@booking.Date</h3>
-            <input type="hidden" name="UserId"value="@booking.User.Id"/>
-            <input type="hidden" name="Date" value="@booking.Date" />
-            <div class="animals-list">
-                @foreach (var animal in booking.Animals)
-                {
-                    <div class="animal-card">
-                        <img src="@animal.Pic" alt="@animal.Name" class="animal-image" />
-                        <span class="animal-name">@animal.Name</span>
-                    </div>
-                }
-            </div>
-            <button class="btn-danger">Cancel</button>
-        </div>
-    </form>
+    <div class="alert alert-danger">
+        Sorry, you don't have any bookings.
+    </div>
     }
+    else
+    {
+        @foreach (var booking in Model)
+        {
+            <form asp-controller="Booking" asp-action="DeleteBooking">
+
+                <div class="booking-card" style="background-color:bisque">
+                    <h3 class="booking-date">@booking.Date</h3>
+                    <input type="hidden" name="UserId" value="@booking.User.Id" />
+                    <input type="hidden" name="Date" value="@booking.Date" />
+                    <div class="animals-list">
+                        @foreach (var animal in booking.Animals)
+                        {
+                            <div class="animal-card">
+                                <img src="@animal.Pic" alt="@animal.Name" class="animal-image" />
+                                <span class="animal-name">@animal.Name</span>
+                            </div>
+                        }
+                    </div>
+                    <button class="btn-danger">Cancel</button>
+                </div>
+            </form>
+        }
+    }
+
 
 

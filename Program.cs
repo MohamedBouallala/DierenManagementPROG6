@@ -39,8 +39,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication(); // dit heb ik toegevoegd
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

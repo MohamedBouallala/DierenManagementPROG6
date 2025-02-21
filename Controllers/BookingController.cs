@@ -45,7 +45,7 @@ namespace DierenManagement.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult BookButton(BookingViewModel model) // userID, date , list met dieren
         {
             try
@@ -57,7 +57,11 @@ namespace DierenManagement.Controllers
                 User? user = _context.Users.FirstOrDefault(u => u.Id == model.UserId);
                 model.User = user;
 
-                CardRulesNotViolated(model);
+                if (User.Identity.IsAuthenticated)
+                {
+                    CardRulesNotViolated(model);
+                }
+
                 CanAnimalsBeBooked(model);
                 
                 int totaal = 0;
@@ -238,6 +242,7 @@ namespace DierenManagement.Controllers
 
         public ActionResult Bookings() // Gebruik Groep by. check of je bij ellke datum of je alle dieren der bij krijgt.
         {
+
             string userName = User.Identity.Name; // GetId werkt niet
             var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
 

@@ -10,19 +10,19 @@
 
 @if (ViewBag.Error != null)
 {
-    <div style="color:white;background-color:red;text-align:center; padding: 10px;border-radius: 5px;margin-top:30px; font-weight:bold">
+    <div class="alert alert-danger"style="margin-top:20px">
        <ul>
             @Html.Raw(@ViewBag.Error)
        </ul>
     </div>
 }
 
-<div style="background-color:burlywood; margin-top:30px;height:40px">
+<div style="background-color:burlywood; margin-top:20px;height:40px">
     <p style="font-weight:bold; text-align:center"> Step 1 -Select Animal(s)</p>
 </div>
 
 <div style="background-color:floralwhite; display:flex; justify-content:space-between">
-<form asp-controller="Booking" asp-action="BookButton" method="post">
+<form asp-controller="Booking" asp-action="BookButton" method="get">
     <div style="display:flex; justify-content:center">
         <h1>Date: @Model.Date</h1>
     </div>

@@ -1,5 +1,6 @@
 ﻿using DierenManagement.ViewModels;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DierenManagement.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
 

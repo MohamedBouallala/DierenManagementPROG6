@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DierenManagement.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AnimalController : Controller
     {
         //AnimalManagementDbContext _context;
