@@ -7,12 +7,15 @@ using DierenManagement.Models;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DierenManagement.Controllers
 {
     public class BookingController : Controller
     {
         AnimalManagementDbContext _context;
+
+        List<string> discountDetails = new List<string>(); // dit moet later weg!!
 
         public BookingController(AnimalManagementDbContext context)
         {
@@ -33,7 +36,7 @@ namespace DierenManagement.Controllers
 
             List<Animal> animals = _context.Animals.ToList();
 
-            //hier haal ik dieren die al geboekt Ijn op de geselcteerde datum.
+            //hier haal ik dieren die al geboekt zijn op de geselcteerde datum.
             List<Animal> animalsAlreadyBookedOnTheDate = _context.bookings
                 .Where(b=>b.Date == model.Date)
                 .Select(b=>b.Animal)
@@ -63,7 +66,7 @@ namespace DierenManagement.Controllers
         }
 
         [HttpGet]
-        public ActionResult BookButton(BookingViewModel model) // userID, date , list met dieren
+        public ActionResult BookingDetails(BookingViewModel model) // userID, date , list met dieren
         {
             try
             {                
@@ -81,13 +84,24 @@ namespace DierenManagement.Controllers
 
                 CanAnimalsBeBooked(model);
                 
-                int totaal = 0;
+                int totaalPrice = 0;
 
                 foreach (var animal in listWithSelectedAnimals)
                 {
-                    totaal += animal.Price;
+                    totaalPrice += animal.Price;
                 }
-                ViewBag.Totaal = totaal;
+
+                decimal priceInDecimal = (decimal)totaalPrice;
+
+                decimal discountPercentage = DiscountCalculator(model);
+
+                decimal discountAmount = (priceInDecimal * discountPercentage) / 100;
+
+                decimal finalPrice = priceInDecimal - discountAmount;
+
+                ViewBag.DiscountDetails = discountDetails;
+
+                ViewBag.Totaal = finalPrice; // met korting
 
                 if (model.listWithSelectedAnimals.Count() == 0)
                 {
@@ -234,8 +248,79 @@ namespace DierenManagement.Controllers
             return true;
         }
 
-        //Totaal methode die het booking binnen krijgt vervolgens de type checkt en daarnna korting toepast.
+        public decimal DiscountCalculator(BookingViewModel booking)
+        {         
 
+            Random random = new Random();
+
+            decimal totalDiscount =  0m;
+
+            // 10% korting voor 3 dieren van hetzelfde type
+            var groupedAnimals = booking.listWithSelectedAnimals.GroupBy(a => a.AnimalType);
+
+            if (groupedAnimals.Any(g =>g.Count() >= 3))
+            {
+                totalDiscount += 10m;
+                discountDetails.Add("10% Discount for 3 animals of the same type");
+            }
+
+            // 1 op 6 kans op 50% korting als 'Eend' in de boeking zit
+
+            if (booking.listWithSelectedAnimals.Any(a => a.Name == "Duck"))
+            {
+                int chance = random.Next(1,7);
+                if (chance == 5)
+                {
+                    totalDiscount += 50m;
+                    discountDetails.Add("1 in 6 chance of a 50% discount if 'Duck' is included in the booking");
+                }
+            }
+
+            //15% korting voor boekingen op maandag of dinsdag
+
+            if (booking.Date.DayOfWeek == DayOfWeek.Monday || booking.Date.DayOfWeek == DayOfWeek.Tuesday)
+            {
+                totalDiscount += 15m;
+                discountDetails.Add("15% discount for bookings on Monday or Tuesday");
+            }
+
+            //Extra korting voor letters in dierennamen
+
+            var uniquLetters = new HashSet<char>();
+
+            foreach (var animal in booking.listWithSelectedAnimals)
+            {
+                foreach (char c in animal.Name.ToUpper())
+                {
+                    if (char.IsLetter(c))
+                    {
+                        uniquLetters.Add(c);
+                    }
+                }
+            }
+
+            totalDiscount += uniquLetters.Count * 2m;
+            discountDetails.Add("Extra discount for unique letters in animal names");
+
+            //10% korting voor klanten met een klantenkaart
+
+            string userName = User.Identity.Name; // GetId werkt niet
+
+            User? user = _context.Users.FirstOrDefault(a => a.UserName == userName);
+
+            if (user.LoyaltyCard != LoyaltyCard.White)
+            {
+                totalDiscount += 10m;
+                discountDetails.Add("10 % discount for customers with a loyalty card");
+            }
+
+            //Maximaal 60% korting
+
+            totalDiscount = Math.Min(totalDiscount, 60m);
+
+            return totalDiscount;
+
+        }
 
         public ActionResult ConfirmBookingButton(BookingViewModel model)
         {
@@ -307,5 +392,22 @@ namespace DierenManagement.Controllers
             
             return View("AllBookings", groepedBookings);
         }
+
+        [Authorize(Roles ="Admin")]
+        public ActionResult AnimalsBookingDetails()
+        {
+            List<Booking> bookings = _context.bookings.Include(b => b.Animal).ToList();
+
+            List<BookingViewModel> groupedBookings = bookings.GroupBy(b => b.Date)
+                .Select(g => new BookingViewModel
+                {
+                    Date = g.Key,
+                    Animals = g.Select(b => b.Animal).ToList(),
+                }).ToList();
+
+
+            return View(groupedBookings);
+        }
+
     }
 }

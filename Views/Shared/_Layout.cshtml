@@ -32,15 +32,19 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
-                        </li>    
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="AnimalsBookingDetails"> See all Bookings Details</a>
+                        </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Index">Book</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Index"> Make a Booking</a>
                         </li>
+                        
                         @if(User.IsInRole("Client") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Bookings"> All Bookings</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="Bookings">Your Bookings</a>
                             </li>
                         }
                         

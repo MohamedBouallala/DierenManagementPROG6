@@ -39,7 +39,7 @@
                     Email:  @Model.User.Email
                 </p>
                 <p style="font-size:30px ; font-weight:bold">
-                    Price/Discount
+                    Price
                 </p>
 
                 @foreach (var item in Model.listWithSelectedAnimals.Select((animal, index) => new { animal, index }))
@@ -51,6 +51,14 @@
                     <input type="hidden" name="listWithSelectedAnimals[@item.index].Price" value="@item.animal.Price" />
                     <input type="hidden" name="listWithSelectedAnimals[@item.index].AnimalType" value="@item.animal.AnimalType" />
                 }
+                
+                <p style="font-size:30px;font-weight:bold">Discount</p>
+                <ul>
+                @foreach (var discountDetail in ViewBag.DiscountDetails)
+                {
+                    <li>@discountDetail</li>
+                }
+                </ul>
 
                 <p style="font-size:30px;font-weight:bold">
                     Totaal: @ViewBag.Totaal.ToString("c")
