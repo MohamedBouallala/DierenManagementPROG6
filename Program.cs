@@ -1,15 +1,20 @@
 using DAL;
 using DierenManagement.DbContextFile;
 using Domain;
+using Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection; // dit is for auto update view
+using BusinessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
+
+// Registreer de IBookingValidator interface en BookingValidation implementatie
+//builder.Services.AddScoped<IBookingValidator, BookingValidation>();
 
 builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 

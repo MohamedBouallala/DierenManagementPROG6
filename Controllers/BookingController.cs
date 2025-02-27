@@ -8,6 +8,8 @@ using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Interface;
+using BusinessLayer;
 
 namespace DierenManagement.Controllers
 {
@@ -15,11 +17,14 @@ namespace DierenManagement.Controllers
     {
         AnimalManagementDbContext _context;
 
+        private readonly IBookingValidator _BookingValidator = new BookingValidation();
+
         List<string> discountDetails = new List<string>(); // dit moet later weg!!
 
-        public BookingController(AnimalManagementDbContext context)
+        public BookingController(AnimalManagementDbContext context /*,IBookingValidator bookingValidator*/)
         {
             this._context = context;
+            //this._BookingValidator = bookingValidator;
         }
 
 
@@ -50,9 +55,6 @@ namespace DierenManagement.Controllers
 
             model.Animals = availableAnimals;
 
-
-            // ik moet hier later de animals die de user al heeft geboekt terug uithalen. en dan vergelijken met model.animal
-
             string userName = User.Identity.Name; // GetId werkt niet
 
             var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
@@ -79,10 +81,14 @@ namespace DierenManagement.Controllers
 
                 if (User.Identity.IsAuthenticated)
                 {
-                    CardRulesNotViolated(model);
+                    //CardRulesNotViolated(model);
+                    _BookingValidator.CardRulesNotViolated(model.ConvertToBookingDto());
                 }
 
-                CanAnimalsBeBooked(model);
+                //CanAnimalsBeBooked(model);
+
+                _BookingValidator.CanAnimalsBeBooked(model.ConvertToBookingDto());
+
                 
                 int totaalPrice = 0;
 
@@ -122,41 +128,41 @@ namespace DierenManagement.Controllers
 
         }
 
-        public bool CanAnimalsBeBooked(BookingViewModel model)
-        {
-            List<string> errors = new List<string>();
+        //public bool CanAnimalsBeBooked(BookingViewModel model)
+        //{
+        //    List<string> errors = new List<string>();
 
-            if (IsthereACornivoreAndFarmAnimal(model.listWithSelectedAnimals))
-            {
-                //throw new Exception("Sorry you can't book a Carnivore and a ForestAnimal at the same time");
-                errors.Add("Sorry you can't book a Carnivore and a Farm Animal at the same time");
+        //    if (IsthereACornivoreAndFarmAnimal(model.listWithSelectedAnimals))
+        //    {
+        //        //throw new Exception("Sorry you can't book a Carnivore and a ForestAnimal at the same time");
+        //        errors.Add("Sorry you can't book a Carnivore and a Farm Animal at the same time");
 
-            }
-            if (IsAnimalBookedOnaBadDay(model))
-            {
-                //throw new Exception("Sorry you can't book a Penguin during the weekends");
-                errors.Add("Sorry you can't book a Penguin during the weekends");
+        //    }
+        //    if (IsAnimalBookedOnaBadDay(model))
+        //    {
+        //        //throw new Exception("Sorry you can't book a Penguin during the weekends");
+        //        errors.Add("Sorry you can't book a Penguin during the weekends");
 
-            }
-            if (IsThereDesertAnimalBookedOnBadMonth(model))
-            {
-                //throw new Exception("Sorry you can't book a desert animal between the months October to February");
-                errors.Add("Sorry you can't book a desert animal between the months October to February");
+        //    }
+        //    if (IsThereDesertAnimalBookedOnBadMonth(model))
+        //    {
+        //        //throw new Exception("Sorry you can't book a desert animal between the months October to February");
+        //        errors.Add("Sorry you can't book a desert animal between the months October to February");
 
-            }
-            if (IsThereSnowAnimalBookedOnBadMonth(model))
-            {
-                //throw new Exception("Sorry you can't book a Snow animal between the months June to August");
-                errors.Add("Sorry you can't book a Snow animal between the months June to August");
+        //    }
+        //    if (IsThereSnowAnimalBookedOnBadMonth(model))
+        //    {
+        //        //throw new Exception("Sorry you can't book a Snow animal between the months June to August");
+        //        errors.Add("Sorry you can't book a Snow animal between the months June to August");
 
-            }
-            if (errors.Any())
-            {
-                throw new Exception(string.Join("<br/>", errors));
-            }
-            return true;
+        //    }
+        //    if (errors.Any())
+        //    {
+        //        throw new Exception(string.Join("<br/>", errors));
+        //    }
+        //    return true;
 
-        }
+        //}
 
         public bool IsthereACornivoreAndFarmAnimal(List<Animal> animals)
         {
@@ -227,26 +233,26 @@ namespace DierenManagement.Controllers
             return false;
         }
 
-        public bool CardRulesNotViolated(BookingViewModel booking)
-        {
-            if (booking.User.LoyaltyCard == LoyaltyCard.White && (booking.listWithSelectedAnimals.Count() > 3 ||
-                booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP)))
-            {
-                throw new Exception("Sorry you have a White Loyalty Card which means you can select only 3 animals and you can't select a VIP animal");
-            }
-            else if (booking.User.LoyaltyCard == LoyaltyCard.Silver && (booking.listWithSelectedAnimals.Count() > 4 ||
-                booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP)))
-            {
-                throw new Exception("Sorry you have a Silver Loyalty Card which means you can select only 4 animals and you can't select a VIP animal");
+        //public bool CardRulesNotViolated(BookingViewModel booking)
+        //{
+        //    if (booking.User.LoyaltyCard == LoyaltyCard.White && (booking.listWithSelectedAnimals.Count() > 3 ||
+        //        booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP)))
+        //    {
+        //        throw new Exception("Sorry you have a White Loyalty Card which means you can select only 3 animals and you can't select a VIP animal");
+        //    }
+        //    else if (booking.User.LoyaltyCard == LoyaltyCard.Silver && (booking.listWithSelectedAnimals.Count() > 4 ||
+        //        booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP)))
+        //    {
+        //        throw new Exception("Sorry you have a Silver Loyalty Card which means you can select only 4 animals and you can't select a VIP animal");
 
-            }
-            else if (booking.User.LoyaltyCard == LoyaltyCard.Gold && booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP))
-            {
-                throw new Exception("Sorry you have a Gold Loyalty Card which means you can't select a VIP animal");
-            }
-            //voor platinum card hoeft niks
-            return true;
-        }
+        //    }
+        //    else if (booking.User.LoyaltyCard == LoyaltyCard.Gold && booking.listWithSelectedAnimals.Any(a => a.AnimalType == AnimalType.VIP))
+        //    {
+        //        throw new Exception("Sorry you have a Gold Loyalty Card which means you can't select a VIP animal");
+        //    }
+        //    //voor platinum card hoeft niks
+        //    return true;
+        //}
 
         public decimal DiscountCalculator(BookingViewModel booking)
         {         
@@ -308,11 +314,15 @@ namespace DierenManagement.Controllers
 
             User? user = _context.Users.FirstOrDefault(a => a.UserName == userName);
 
-            if (user.LoyaltyCard != LoyaltyCard.White)
+            if (user != null)
             {
-                totalDiscount += 10m;
-                discountDetails.Add("10 % discount for customers with a loyalty card");
+                if (user.LoyaltyCard != LoyaltyCard.White)
+                {
+                    totalDiscount += 10m;
+                    discountDetails.Add("10 % discount for customers with a loyalty card");
+                }
             }
+            
 
             //Maximaal 60% korting
 
