@@ -12,20 +12,18 @@ namespace DierenManagement.Controllers
     [Authorize(Roles = "Admin")]
     public class AnimalController : Controller
     {
-        //AnimalManagementDbContext _context;
+        AnimalManagementDbContext _context;
 
-        private IAnimalRepository _animalRepository;
-
-        public AnimalController(/*AnimalManagementDbContext context,*/ IAnimalRepository repository)
+        public AnimalController(AnimalManagementDbContext context)
         {
-            //this._context = context;
-            _animalRepository = repository;
+            this._context = context;
+
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            ICollection<Animal> animals = _animalRepository.GetAllAnimals().ToList();
+            ICollection<Animal> animals = _context.Animals.ToList();
 
             return View(animals);
         }
@@ -33,9 +31,7 @@ namespace DierenManagement.Controllers
         [HttpGet]
         public ActionResult Details(int id)
         {
-            //Animal? animal = _context.Animals.FirstOrDefault(animal => animal.Id == id);
-            Animal? animal = _animalRepository.GetAnimalById(id);
-
+            Animal? animal = _context.Animals.FirstOrDefault(animal => animal.Id == id);
 
             return View(animal);
         }
@@ -57,7 +53,8 @@ namespace DierenManagement.Controllers
         {
             try
             {
-                _animalRepository.Add(animal);
+                _context.Animals.Add(animal);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -70,9 +67,7 @@ namespace DierenManagement.Controllers
         //[Authorize(Roles ="Admin")]
         public ActionResult Edit(int id)
         {
-            //Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
-            Animal animal = _animalRepository.GetAnimalById(id);
-
+            Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
             List<AnimalType> animalTypes = Enum.GetValues(typeof(AnimalType)).Cast<AnimalType>().ToList();
             ViewBag.AnimalType = animalTypes;
 
@@ -86,13 +81,17 @@ namespace DierenManagement.Controllers
         public ActionResult Edit(Animal currentAnimal)
         {
 
-            //Animal? animalToUpdate = _context.Animals.FirstOrDefault(a => a.Id == currentAnimal.Id);
-
-            //Animal animalToUpdate = _animalRepository.GetAnimalById(currentAnimal.Id);
-
             if (currentAnimal != null)
             {
-                _animalRepository.Update(currentAnimal);
+
+                Animal? animalToUpdate = _context.Animals.FirstOrDefault(a => a.Id == currentAnimal.Id);
+
+                if (animalToUpdate != null)
+                {
+                    _context.Entry(animalToUpdate).CurrentValues.SetValues(currentAnimal);
+                    _context.SaveChanges();
+                }
+
                 return RedirectToAction(nameof(Index));
 
             }
@@ -107,10 +106,7 @@ namespace DierenManagement.Controllers
         //[Authorize(Roles ="Admin")]
         public ActionResult Delete(int id)
         {
-            //Animal? animal = _context.Animals.FirstOrDefault(anim => anim.Id == id);
-            Animal animal = _animalRepository.GetAnimalById(id);
-
-
+            Animal? animal = _context.Animals.FirstOrDefault(anim => anim.Id == id);
             return View(animal);
         }
 
@@ -121,13 +117,11 @@ namespace DierenManagement.Controllers
         {
             try
             {
-                //Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
-                //_context.Remove(animal);
+                Animal? animal = _context.Animals.FirstOrDefault(a => a.Id == id);
 
-                Animal animal = _animalRepository.GetAnimalById(id);
-                _animalRepository.Delete(animal);
+                _context.Animals.Remove(animal);
+                _context.SaveChanges();
 
-                //_context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
