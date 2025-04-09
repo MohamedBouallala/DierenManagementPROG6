@@ -12,7 +12,7 @@ namespace DierenManagement.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager; // dit heb ik toegevoegd later kijken of dit er ook bij moet
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(UserManager<User> userManager,SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
@@ -68,7 +68,7 @@ namespace DierenManagement.Controllers
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         ViewBag.LoyaltyCards = Enum.GetValues(typeof(LoyaltyCard)).Cast<LoyaltyCard>().ToList();
 
-                        return View("Register", model); // dit moet ik aanpassen
+                        return View("Register", model);
                     }
 
                 }

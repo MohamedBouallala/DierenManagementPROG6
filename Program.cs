@@ -1,4 +1,4 @@
-using DAL;
+//using DAL;
 using DierenManagement.DbContextFile;
 using Domain;
 using Interface;
@@ -13,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 
-// Registreer de IBookingValidator interface en BookingValidation implementatie
-//builder.Services.AddScoped<IBookingValidator, BookingValidation>();
+builder.Services.AddScoped<IBookingValidator, BookingValidation>();
 
 builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 
@@ -26,8 +25,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
         options.SignIn.RequireConfirmedAccount = false;
         
         }).AddEntityFrameworkStores<AnimalManagementDbContext>();
-
-builder.Services.AddScoped<IAnimalRepository, SqlAnimalRepository>(); // DI
 
 var app = builder.Build();
 

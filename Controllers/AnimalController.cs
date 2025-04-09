@@ -1,4 +1,4 @@
-﻿using DAL;
+﻿//using DAL;
 using DierenManagement.DbContextFile;
 using DierenManagement.Models;
 using Domain;

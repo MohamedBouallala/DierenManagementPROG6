@@ -5,55 +5,9 @@
 
 <h1>Bookings</h1>
 
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Animal.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Animal.Pic)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Animal.Name)
-                </td>
-                <td>
-                    <img style="width:60px" src="@item.Animal.Pic"/>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table> *@
 
 <link rel="stylesheet" href="~/css/StyleSheet.css">
 
-@* @foreach (var booking in Model)
-{
-    <div class="date-group">
-        <h3>@booking.Date.ToString("yyyy-MM-dd")</h3>
-        <div class="animals">
-            @foreach (var animal in booking.Animals)
-            {
-                <span class="animal">@animal.Name</span><br/>
-                <img src="@animal.Pic"; style="max-width:80px"/>
-            }
-        </div>
-    </div>
-} *@
 
 @if (Model.Count() == 0)
     {
